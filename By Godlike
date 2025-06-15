@@ -1,3 +1,82 @@
+local Library = safeLoad("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau", "Fluent Library")
+
+local SaveManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau", "Save Manager")
+
+local InterfaceManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau", "Interface Manager")
+
+local Window = Library:CreateWindow {
+
+    Title = "SLHV2 Paid Script",
+
+    SubTitle = "By Yamss",
+
+    TabWidth = 125,
+
+    Size = UDim2.fromOffset(830, 525),
+
+    Resize = true,
+
+    MinSize = Vector2.new(470, 380),
+
+    Acrylic = true,
+
+    Theme = "Viow Mars",
+
+    MinimizeKey = Enum.KeyCode.RightControl
+
+}
+
+local Tabs = {
+
+	Main = Window:CreateTab{
+
+		Title = "Main",
+
+		Icon = "phosphor-house-bold"
+
+	},
+
+	AutoFarm = Window:CreateTab{
+
+		Title = "Auto Farm",
+
+		Icon = "phosphor-robot-bold"
+
+	},
+
+	Rebirth = Window:CreateTab{
+
+		Title = "OP Rebirth",
+
+		Icon = "phosphor-arrows-clockwise-bold"
+
+	},
+
+	Killer = Window:CreateTab{
+
+		Title = "Killer",
+
+		Icon = "phosphor-sword-bold"
+
+	},
+
+    Stats = Window:CreateTab{
+
+        Title = "Stats",
+
+        Icon = "phosphor-sparkle-bold"
+
+    },
+
+    Reb = Window:CreateTab{
+
+		Title = "Normal Rebirth",
+
+		Icon = "phosphor-arrows-clockwise-bold"
+
+	},
+
+}
 local Window = Library:CreateWindow {
     Title = "SLHV2 Paid Script",
     SubTitle = "By Yamss",
