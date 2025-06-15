@@ -1,62 +1,73 @@
-local Window = Rayfield:CreateWindow({
-   Name = "Muscle King Script",
-   Icon = 0,
-   LoadingTitle = "Private Script",
-   LoadingSubtitle = "by Godlike",
-   Theme = "Ocean",
-   ToggleUIKeybind = "K",
-   DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false,
-   ConfigurationSaving = {
-      Enabled = true,
-      FolderName = nil,
-      FileName = "Big Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = false,
-   KeySettings = {
-      Title = "Untitled",
-      Subtitle = "Key System",
-      Note = "No method of obtaining the key is provided",
-      FileName = "Key",
-      SaveKey = true,
-      GrabKeyFromSite = false,
-      Key = {"Hello"}
-   }
-})
+local Window = Library:CreateWindow {
 
-Rayfield:Notify({
-   Title = "Hello",
-   Content = "Welcome isayt5729",
-   Duration = 3.5,
-   Image = "dumbell",
-})
+    Title = "SLHV2 Paid Script",
 
-local Main = Window:CreateTab("Main", "moon")
-local AutoWeight = Window:CreateTab("Auto Weight", "earth-lock")
-local AutoRebirth = Window:CreateTab("Auto Rebirth", "haze")
-local AutoKill = Window:CreateTab("Auto Kill", "utensils")
-local AutoRock = Window:CreateTab("Auto Rock", "mountain")
-local Teleports = Window:CreateTab("Teleports", "door-closed")
-local OPTOOLS = Window:CreateTab("OP TOOLS", "power")
-local Misc = Window:CreateTab("Misc", "settings")
-local Credits = Window:CreateTab("Credits", "file-badge-2")
-local LinkedDiscords = Window:CreateTab("Linked Discords", "bot")
+    SubTitle = "By Yamss",
 
-local Input = Main:CreateInput({
-   Name = "Size Changer",
-   CurrentValue = "2",
-   PlaceholderText = "Choose Ur Size",
-   RemoveTextAfterFocusLost = false,
-   Flag = "Size",
-   Callback = function(Text)
-       local selectedSize = Text
-       if _G.AutoSize then
-           game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", tonumber(selectedSize))
-       end
-   end
-})
+    TabWidth = 125,
+
+    Size = UDim2.fromOffset(830, 525),
+
+    Resize = true,
+
+    MinSize = Vector2.new(470, 380),
+
+    Acrylic = true,
+
+    Theme = "Viow Mars",
+
+    MinimizeKey = Enum.KeyCode.RightControl
+
+}
+
+local Tabs = {
+
+	Main = Window:CreateTab{
+
+		Title = "Main",
+
+		Icon = "phosphor-house-bold"
+
+	},
+
+	AutoFarm = Window:CreateTab{
+
+		Title = "Auto Farm",
+
+		Icon = "phosphor-robot-bold"
+
+	},
+
+	Rebirth = Window:CreateTab{
+
+		Title = "OP Rebirth",
+
+		Icon = "phosphor-arrows-clockwise-bold"
+
+	},
+
+	Killer = Window:CreateTab{
+
+		Title = "Killer",
+
+		Icon = "phosphor-sword-bold"
+
+	},
+
+    Stats = Window:CreateTab{
+
+        Title = "Stats",
+
+        Icon = "phosphor-sparkle-bold"
+
+    },
+
+    Reb = Window:CreateTab{
+
+		Title = "Normal Rebirth",
+
+		Icon = "phosphor-arrows-clockwise-bold"
+
+	},
+
+}
