@@ -1,42 +1,24 @@
-local Library = safeLoad("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau", "Fluent Library")
-local SaveManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau", "Save Manager")
-local InterfaceManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau", "Interface Manager")
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
-local Window = Library:CreateWindow {
-    Title = "SLHV2 Paid Script",
-    SubTitle = "By Yamss",
-    TabWidth = 125,
-    Size = UDim2.fromOffset(830, 525),
-    Resize = true,
-    MinSize = Vector2.new(470, 380),
-    Acrylic = true,
-    Theme = "Viow Mars",
-    MinimizeKey = Enum.KeyCode.RightControl
-}
+local Window = Fluent:CreateWindow({
+    Title = "Muscle King Script"
+    SubTitle = "by Godlike",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+})
 
+--Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, icons are optional
 local Tabs = {
-    Main = Window:CreateTab{
-        Title = "Main",
-        Icon = "phosphor-house-bold"
-    },
-    AutoFarm = Window:CreateTab{
-        Title = "Auto Farm",
-        Icon = "phosphor-robot-bold"
-    },
-    Rebirth = Window:CreateTab{
-        Title = "OP Rebirth",
-        Icon = "phosphor-arrows-clockwise-bold"
-    },
-    Killer = Window:CreateTab{
-        Title = "Killer",
-        Icon = "phosphor-sword-bold"
-    },
-    Stats = Window:CreateTab{
-        Title = "Stats",
-        Icon = "phosphor-sparkle-bold"
-    },
-    Reb = Window:CreateTab{
-        Title = "Normal Rebirth",
-        Icon = "phosphor-arrows-clockwise-bold"
-    },
+    Main = Window:AddTab({ Title = "Main", Icon = "aperture" }),
+    AutoWeight = Window:AddTab({ Title = "Auto Weight", Icon = "dumbbell" }),
+    AutoRebirth = Window:AddTab({ Title = "Auto Rebirth", Icon = "circle-fading-arrow-up" }),
+    AutoKill = Window:AddTab({ Title = "Auto Kill", Icon = "utensils" }),
+    AutoRock = Window:AddTab({ Title = "Auto Rock", Icon = "mountain" }),
+    Misc = Window:AddTab({ Title = "Misc", Icon = "settings" }),
+    Credits = Window:AddTab({ Title = "Credits", Icon = "file" }),
 }
