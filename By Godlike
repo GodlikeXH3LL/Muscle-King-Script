@@ -14,6 +14,14 @@ local Window = Library:CreateWindow{
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.RightControl
 }
+
+Fluent:Notify({
+        Title = "Welcome",
+        Content = "Hope you enjoy!!!",
+        SubContent = "Made by Godlike", -- Optional
+        Duration = 5 -- Set to nil to make the notification not disappear
+})
+
 local Tabs = {
     Main = Window:AddTab({ Title = "Main", Icon = "aperture" }),
     AutoWeight = Window:AddTab({ Title = "Auto Weight", Icon = "dumbbell" }),
@@ -23,3 +31,38 @@ local Tabs = {
     Misc = Window:AddTab({ Title = "Misc", Icon = "settings" }),
     Credits = Window:AddTab({ Title = "Credits", Icon = "file" }),
 }
+
+local Main = Tabs.Main
+
+local Section = Main:AddSection("The General Stuff")
+
+local Input = Main:AddInput("SizeChanger", {
+    Title = "Size",
+    Description = "Change Ur Size",
+    Default = "150",
+    Placeholder = "Input ur size",
+    Numeric = true,
+    Finished = false,
+    Callback = function(Value)
+        selectedSize = Value
+        if _G.AutoSize then
+            game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", tonumber(selectedSize))
+        end
+    end
+})
+
+local Toggle = Main:AddToggle("Size", 
+{
+    Title = "Size", 
+    Description = "Change ur size",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            _G.AutoSize = Value
+            while _G.AutoSize do
+                game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", tonumber(selectedSize))
+                task.wait(0.1)
+            end
+        end
+    end
+})
