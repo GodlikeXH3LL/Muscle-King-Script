@@ -7,9 +7,11 @@ local Window = Fluent:CreateWindow({
     SubTitle = "by Godlike",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
+    Resize = true,
+    MinSize = Vector2.new(470, 380)
     Acrylic = true,
     Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl
+    MinimizeKey = Enum.KeyCode.RightControl
 })
 
 local Tabs = {
