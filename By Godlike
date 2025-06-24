@@ -1,19 +1,19 @@
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
-local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
+local SaveManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau"))()
+local InterfaceManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau"))()
 
-local Window = Fluent:CreateWindow({
+-- Ã°Å¸Â  CrÃƒÂ©ation de la fenÃƒÂªtre principale
+local Window = Library:CreateWindow{
     Title = "Muscle King Script",
-    SubTitle = "by Godlike",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
+    SubTitle = "By Godlike",
+    TabWidth = 125,
+    Size = UDim2.fromOffset(830, 525),
     Resize = true,
     MinSize = Vector2.new(470, 380),
     Acrylic = true,
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.RightControl
-})
-
+}
 local Tabs = {
     Main = Window:AddTab({ Title = "Main", Icon = "aperture" }),
     AutoWeight = Window:AddTab({ Title = "Auto Weight", Icon = "dumbbell" }),
