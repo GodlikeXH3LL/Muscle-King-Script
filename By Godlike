@@ -122,3 +122,13 @@ Tabs.Main:AddButton{
         game:GetService("Lighting").GlobalShadows = false
     end
 }
+
+Tabs.Main:AddButton{
+    Title = "Change Player KOS",
+    Callback = function()
+        game:GetService("NumberValue"):FindFirstChild("requirements").PlayerKOs.Value = 250
+        if game:GetService("NumberValue"):FindFirstChild("requirements").PlayerKOs.Value == 250 then
+            game:GetService("NumberValue"):FindFirstChild("requirements").PlayerKOs.Value = 1
+        end
+    end
+}
