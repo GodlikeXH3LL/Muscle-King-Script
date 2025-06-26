@@ -2,8 +2,7 @@ local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOog
 local SaveManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau"))()
 local InterfaceManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau"))()
 
--- Ã°Å¸Â  CrÃƒÂ©ation de la fenÃƒÂªtre principale
-local Window = Library:CreateWindow{
+local Window = Library:CreateWindow({
     Title = "Muscle King Script",
     SubTitle = "By Godlike",
     TabWidth = 125,
@@ -13,13 +12,13 @@ local Window = Library:CreateWindow{
     Acrylic = true,
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.RightControl
-}
+})
 
-Fluent:Notify({
-        Title = "Welcome",
-        Content = "Hope you enjoy!!!",
-        SubContent = "Made by Godlike", -- Optional
-        Duration = 5 -- Set to nil to make the notification not disappear
+Library:Notify({
+    Title = "Welcome",
+    Content = "Hope you enjoy!!!",
+    SubContent = "Made by Godlike",
+    Duration = 5
 })
 
 local Tabs = {
@@ -32,11 +31,11 @@ local Tabs = {
     Credits = Window:AddTab({ Title = "Credits", Icon = "file" }),
 }
 
-local Main = Tabs.Main
+local Section = Tabs.Main:AddSection("The General Stuff")
 
-local Section = Main:AddSection("The General Stuff")
+local selectedSize = 150
 
-local Input = Main:AddInput("SizeChanger", {
+local Input = Section:AddInput("SizeChanger", {
     Title = "Size",
     Description = "Change Ur Size",
     Default = "150",
@@ -51,14 +50,13 @@ local Input = Main:AddInput("SizeChanger", {
     end
 })
 
-local Toggle = Main:AddToggle("Size", 
-{
-    Title = "Size", 
+local Toggle = Section:AddToggle("Size", {
+    Title = "Size",
     Description = "Change ur size",
     Default = false,
     Callback = function(Value)
+        _G.AutoSize = Value
         if Value then
-            _G.AutoSize = Value
             while _G.AutoSize do
                 game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", tonumber(selectedSize))
                 task.wait(0.1)
