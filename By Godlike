@@ -23,6 +23,7 @@ Library:Notify({
 
 local Tabs = {
     Main = Window:AddTab({ Title = "Main", Icon = "aperture" }),
+    Performance = Window:AddTab({ Title = "Performance", Icon = "gauge" }),
     AutoWeight = Window:AddTab({ Title = "Auto Weight", Icon = "dumbbell" }),
     AutoRebirth = Window:AddTab({ Title = "Auto Rebirth", Icon = "circle-fading-arrow-up" }),
     AutoKill = Window:AddTab({ Title = "Auto Kill", Icon = "utensils" }),
@@ -38,69 +39,75 @@ local selectedSpeed = 150
 
 local SizeInput = Section:AddInput("SizeChanger", {
     Title = "Size",
-    Description = "Change Ur Size",
-    Default = "2",
-    Placeholder = "Input ur size",
+    Description = "Change Your Size",
+    Default = "150",
+    Placeholder = "Input your size",
     Numeric = true,
     Finished = false,
     Callback = function(Value)
-        selectedSize = Value
+        selectedSize = tonumber(Value) or 150
         if _G.AutoSize then
-            game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", tonumber(selectedSize))
+            game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", selectedSize)
         end
     end
 })
 
-local SizeToggle = Section:AddToggle("Size", {
-    Title = "Size",
-    Description = "Change ur size",
+local SizeToggle = Section:AddToggle("AutoSize", {
+    Title = "Auto Size",
+    Description = "Automatically change your size",
     Default = false,
     Callback = function(Value)
         _G.AutoSize = Value
         if Value then
-            while _G.AutoSize do
-                game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", tonumber(selectedSize))
-                task.wait(0.1)
-            end
+            task.spawn(function()
+                while _G.AutoSize do
+                    game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", selectedSize)
+                    task.wait(0.1)
+                end
+            end)
         end
     end
 })
 
 local SpeedInput = Section:AddInput("SpeedChanger", {
     Title = "Speed",
-    Description = "Change Ur Speed",
+    Description = "Change Your Speed",
     Default = "150",
-    Placeholder = "Input ur speed",
+    Placeholder = "Input your speed",
     Numeric = true,
     Finished = false,
     Callback = function(Value)
-        selectedSpeed = Value
+        selectedSpeed = tonumber(Value) or 150
         if _G.AutoSpeed then
             if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = tonumber(selectedSpeed)
+                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = selectedSpeed
             end
         end
     end
 })
 
-local SpeedToggle = Section:AddToggle("Speed", {
-    Title = "Speed",
-    Description = "Change ur speed",
+local SpeedToggle = Section:AddToggle("AutoSpeed", {
+    Title = "Auto Speed",
+    Description = "Automatically change your speed",
     Default = false,
     Callback = function(Value)
         _G.AutoSpeed = Value
-        while _G.AutoSpeed do
-            if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = tonumber(selectedSpeed)
-            end
-            task.wait()
+        if Value then
+            task.spawn(function()
+                while _G.AutoSpeed do
+                    if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+                        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = selectedSpeed
+                    end
+                    task.wait(0.1)
+                end
+            end)
         end
     end
 })
 
 local Section = Tabs.Main:AddSection("Free Options")
 
-Tabs.Main:AddButton{
+Tabs.Main:AddButton({
     Title = "Free AutoLift Gamepass",
     Callback = function()
         local gamepassFolder = game:GetService("ReplicatedStorage").gamepassIds
@@ -112,23 +119,38 @@ Tabs.Main:AddButton{
             value.Parent = player.ownedGamepasses
         end
     end
-}
+})
 
-local Section = Tabs.Main:AddSection("Will make more stuff when i invent it")
+local Section = Tabs.Main:AddSection("Will make more stuff when I invent it")
 
-Tabs.Main:AddButton{
-    Title = "Remove Shadows",
+Tabs.Performance:AddButton({
+    Title = "Destroy Shadows",
     Callback = function()
         game:GetService("Lighting").GlobalShadows = false
     end
-}
+})
 
-Tabs.Main:AddButton{
-    Title = "Change Player KOS",
+Tabs.Performance:AddButton({
+    Title = "Enable Shadows",
     Callback = function()
-        game:GetService("NumberValue"):LocalPlayer("requirements").PlayerKOs.Value = 250
-        if game:GetService("NumberValue"):LocalPlayer("requirements").PlayerKOs.Value == 250 then
-            game:GetService("NumberValue"):LocalPlayer("requirements").PlayerKOs.Value = 1
+        game:GetService("Lighting").GlobalShadows = true
+    end
+})
+
+Tabs.Main:AddButton({
+    Title = "Disable Graphics",
+    Callback = function()
+        if game:GetService("ReplicatedStorage"):FindFirstChild("GraphicsParticles") then
+            game:GetService("ReplicatedStorage").GraphicsParticles = false
         end
     end
-}
+})
+
+Tabs.Main:AddButton({
+    Title = "Enable Graphics",
+    Callback = function()
+        if game:GetService("ReplicatedStorage"):FindFirstChild("GraphicsParticles") then
+            game:GetService("ReplicatedStorage").GraphicsParticles = true
+        end
+    end
+})
