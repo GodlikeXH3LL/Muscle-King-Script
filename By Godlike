@@ -126,9 +126,9 @@ Tabs.Main:AddButton{
 Tabs.Main:AddButton{
     Title = "Change Player KOS",
     Callback = function()
-        game:GetService("NumberValue"):FindFirstChild("requirements").PlayerKOs.Value = 250
-        if game:GetService("NumberValue"):FindFirstChild("requirements").PlayerKOs.Value == 250 then
-            game:GetService("NumberValue"):FindFirstChild("requirements").PlayerKOs.Value = 1
+        game:GetService("NumberValue"):LocalPlayer("requirements").PlayerKOs.Value = 250
+        if game:GetService("NumberValue"):LocalPlayer("requirements").PlayerKOs.Value == 250 then
+            game:GetService("NumberValue"):LocalPlayer("requirements").PlayerKOs.Value = 1
         end
     end
 }
