@@ -5,8 +5,7 @@ local HttpService = game:GetService("HttpService")
  
 -- Excluded display names
 local excludedNames = {
-    ["U3RT_SOVIETxKILLA"] = false,
-    ["U3RT_KILLAxSOVIET"] = false,
+    ["TopKillsBrr"] = false,
 }
  
 -- Server hop function to find 18 or 19-player servers
@@ -79,9 +78,107 @@ end
  
 -- Setup on future characters
 LocalPlayer.CharacterAdded:Connect(setupDiedListener)
+ 
+-- Detect if the player is in a game with the specific display name and hop
+task.spawn(function()
+    while true do
+        task.wait(2) -- Check every 2 seconds
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.DisplayName == "TopKillsBrr" then
+                hopToServer()
+                return
+            end
+        end
+    end
+end)
+ 
+-- Healing loop (max health)
+task.spawn(function()
+    while true do
+        task.wait(0.3)
+        local char = LocalPlayer.Character
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            hum.Health = hum.MaxHealth
+        end
+    end
+end)
+ 
+-- Auto equip the Punch tool every 0.1 seconds
+task.spawn(function()
+    while true do
+        task.wait(0.1)  -- Wait for 0.1 seconds before checking again
+ 
+        -- Check if the tool exists in the backpack
+        local Backpack = LocalPlayer:WaitForChild("Backpack")
+        local tool = Backpack:FindFirstChild("Punch")
+ 
+        -- If the tool exists and is not equipped, equip it
+        if tool and LocalPlayer.Character then
+            local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid and tool.Parent ~= LocalPlayer.Character then
+                humanoid:EquipTool(tool)
+            end
+        end
+    end
+end)
+ 
+ 
+-- Auto punch function
+task.spawn(function()
+    local Backpack = LocalPlayer:WaitForChild("Backpack")
+    local tool = Backpack:WaitForChild("Punch")
+ 
+    repeat task.wait() until LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid")
+    local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+    humanoid:EquipTool(tool)
+ 
+    while true do
+        task.wait(0.1)
+        if tool and tool.Parent == LocalPlayer.Character then
+            tool:Activate()
+        end
+    end
+end)
 
+for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+            v.Enabled = false
+        end
+    end
+ 
+    local lighting = game:GetService("Lighting")
+    lighting.GlobalShadows = false
+    lighting.FogEnd = 9e9
+    lighting.Brightness = 0
+ 
+    settings().Rendering.QualityLevel = 1
+ 
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("Decal") or v:IsA("Texture") then
+            v.Transparency = 1
+        elseif v:IsA("BasePart") and not v:IsA("MeshPart") then
+            v.Material = Enum.Material.SmoothPlastic
+            if v.Parent and (v.Parent:FindFirstChild("Humanoid") or v.Parent.Parent:FindFirstChild("Humanoid")) then
+            else
+                v.Reflectance = 0
+            end
+        end
+    end
+ 
+    for _, v in pairs(lighting:GetChildren()) do
+        if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
+            v.Enabled = false
+        end
+    end
+
+game.Lighting.TimeOfDay = "00:00:00"
+end
+
+
+local Players = game:GetService("Players")
 local function getCharacter()
-    return LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    return Players.LocalPlayer.Character or Players.LocalPlayer.CharacterAdded:Wait()
 end
 
 local function killTarget(target)
@@ -96,37 +193,8 @@ local function killTarget(target)
                 firetouchinterest(root, leftHand, 1)
             end
             if rightHand then
-                firetouchinterest(root, rightHand, 0)
-                firetouchinterest(root, rightHand, 1)
+                 firetouchinterest(root, rightHand, 0)
+                 firetouchinterest(root, rightHand, 1)
             end
-        end
-    end
-end
-
-getgenv().killAll = true
-
-task.spawn(function()
-    while getgenv().killAll do
-        for _, p in pairs(Players:GetPlayers()) do
-            if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                killTarget(p)
-            end
-        end
-        task.wait(0.1)
-    end
-end)
-
-task.spawn(function()
-                while _G.fastHit do
-                    local plr = Players.LocalPlayer
-                    local tool = plr.Backpack:FindFirstChild("Punch")
-                    if tool then tool.Parent = plr.Character end
-                    plr.muscleEvent:FireServer("punch", "rightHand")
-                    plr.muscleEvent:FireServer("punch", "leftHand")
-                    local punchTool = plr.Character and plr.Character:FindFirstChild("Punch")
-                    if punchTool then punchTool:Activate() end
-                    task.wait()
-                end
-            end)
         end
     end
