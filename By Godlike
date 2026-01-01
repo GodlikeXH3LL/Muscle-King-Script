@@ -1,156 +1,132 @@
-local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
-local SaveManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau"))()
-local InterfaceManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau"))()
-
-local Window = Library:CreateWindow({
-    Title = "Muscle King Script",
-    SubTitle = "By Godlike",
-    TabWidth = 125,
-    Size = UDim2.fromOffset(830, 525),
-    Resize = true,
-    MinSize = Vector2.new(470, 380),
-    Acrylic = true,
-    Theme = "Darker",
-    MinimizeKey = Enum.KeyCode.RightControl
-})
-
-Library:Notify({
-    Title = "Welcome",
-    Content = "Hope you enjoy!!!",
-    SubContent = "Made by Godlike",
-    Duration = 5
-})
-
-local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "aperture" }),
-    Performance = Window:AddTab({ Title = "Performance", Icon = "gauge" }),
-    AutoWeight = Window:AddTab({ Title = "Auto Weight", Icon = "dumbbell" }),
-    AutoRebirth = Window:AddTab({ Title = "Auto Rebirth", Icon = "circle-fading-arrow-up" }),
-    AutoKill = Window:AddTab({ Title = "Auto Kill", Icon = "utensils" }),
-    AutoRock = Window:AddTab({ Title = "Auto Rock", Icon = "mountain" }),
-    Misc = Window:AddTab({ Title = "Misc", Icon = "settings" }),
-    Credits = Window:AddTab({ Title = "Credits", Icon = "file" }),
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+ 
+-- Excluded display names
+local excludedNames = {
+    ["U3RT_SOVIETxKILLA"] = false,
+    ["U3RT_KILLAxSOVIET"] = false,
 }
-
-local Section = Tabs.Main:AddSection("The General Stuff")
-
-local selectedSize = 150
-local selectedSpeed = 150
-
-local SizeInput = Section:AddInput("SizeChanger", {
-    Title = "Size",
-    Description = "Change Your Size",
-    Default = "150",
-    Placeholder = "Input your size",
-    Numeric = true,
-    Finished = false,
-    Callback = function(Value)
-        selectedSize = tonumber(Value) or 150
-        if _G.AutoSize then
-            game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", selectedSize)
+ 
+-- Server hop function to find 18 or 19-player servers
+local placeId = game.PlaceId
+ 
+local function find18Or19PlayerServer()
+    local cursor = nil
+    repeat
+        local url = "https://games.roblox.com/v1/games/"..placeId.."/servers/Public?sortOrder=Desc&limit=100"
+        if cursor then
+            url = url.."&cursor="..cursor
         end
-    end
-})
-
-local SizeToggle = Section:AddToggle("AutoSize", {
-    Title = "Auto Size",
-    Description = "Automatically change your size",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoSize = Value
-        if Value then
-            task.spawn(function()
-                while _G.AutoSize do
-                    game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", selectedSize)
-                    task.wait(0.1)
+ 
+        local success, response = pcall(function()
+            return HttpService:JSONDecode(game:HttpGet(url))
+        end)
+ 
+        if success and response and response.data then
+            for _, server in ipairs(response.data) do
+                if (server.playing == 18) and server.maxPlayers == 20 and server.id ~= game.JobId then
+                    -- Found a server with 18 or 19 players out of 20
+                    return server.id
                 end
-            end)
+            end
+            cursor = response.nextPageCursor
+        else
+            break
         end
+    until not cursor
+ 
+    return nil -- No server found
+end
+ 
+-- Function to hop to a server
+local function hopToServer()
+    local serverId = find18Or19PlayerServer()
+    if serverId then
+        TeleportService:TeleportToPlaceInstance(placeId, serverId, LocalPlayer)
+    else
+        warn("No 18 or 19-player servers found! Retrying in 5 seconds...")
+        task.delay(1, hopToServer) -- Retry after 5 seconds
     end
-})
+end
+ 
+-- Start hopping after 38 seconds
+task.delay(48, hopToServer)
+ 
+-- Died listener setup to hop server upon death
+local function setupDiedListener(character)
+    local hum = character:FindFirstChildOfClass("Humanoid")
+    if hum then
+        hum.Died:Connect(function()
+            hopToServer()
+        end)
+    else
+        character.ChildAdded:Connect(function(child)
+            if child:IsA("Humanoid") then
+                child.Died:Connect(function()
+                    hopToServer()
+                end)
+            end
+        end)
+    end
+end
+ 
+-- Setup on current character
+if LocalPlayer.Character then
+    setupDiedListener(LocalPlayer.Character)
+end
+ 
+-- Setup on future characters
+LocalPlayer.CharacterAdded:Connect(setupDiedListener)
 
-local SpeedInput = Section:AddInput("SpeedChanger", {
-    Title = "Speed",
-    Description = "Change Your Speed",
-    Default = "150",
-    Placeholder = "Input your speed",
-    Numeric = true,
-    Finished = false,
-    Callback = function(Value)
-        selectedSpeed = tonumber(Value) or 150
-        if _G.AutoSpeed then
-            if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = selectedSpeed
+local function getCharacter()
+    return LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+end
+
+local function killTarget(target)
+    local char = getCharacter()
+    if char and target.Character then
+        local root = target.Character:FindFirstChild("HumanoidRootPart")
+        local leftHand = char:FindFirstChild("LeftHand")
+        local rightHand = char:FindFirstChild("RightHand")
+        if root and (leftHand or rightHand) then
+            if leftHand then
+                firetouchinterest(root, leftHand, 0)
+                firetouchinterest(root, leftHand, 1)
+            end
+            if rightHand then
+                firetouchinterest(root, rightHand, 0)
+                firetouchinterest(root, rightHand, 1)
             end
         end
     end
-})
+end
 
-local SpeedToggle = Section:AddToggle("AutoSpeed", {
-    Title = "Auto Speed",
-    Description = "Automatically change your speed",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoSpeed = Value
-        if Value then
-            task.spawn(function()
-                while _G.AutoSpeed do
-                    if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-                        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = selectedSpeed
-                    end
-                    task.wait(0.1)
+getgenv().killAll = true
+
+task.spawn(function()
+    while getgenv().killAll do
+        for _, p in pairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
+                killTarget(p)
+            end
+        end
+        task.wait(0.1)
+    end
+end)
+
+task.spawn(function()
+                while _G.fastHit do
+                    local plr = Players.LocalPlayer
+                    local tool = plr.Backpack:FindFirstChild("Punch")
+                    if tool then tool.Parent = plr.Character end
+                    plr.muscleEvent:FireServer("punch", "rightHand")
+                    plr.muscleEvent:FireServer("punch", "leftHand")
+                    local punchTool = plr.Character and plr.Character:FindFirstChild("Punch")
+                    if punchTool then punchTool:Activate() end
+                    task.wait()
                 end
             end)
         end
     end
-})
-
-local Section = Tabs.Main:AddSection("Free Options")
-
-Tabs.Main:AddButton({
-    Title = "Free AutoLift Gamepass",
-    Callback = function()
-        local gamepassFolder = game:GetService("ReplicatedStorage").gamepassIds
-        local player = game:GetService("Players").LocalPlayer
-        for _, gamepass in pairs(gamepassFolder:GetChildren()) do
-            local value = Instance.new("IntValue")
-            value.Name = gamepass.Name
-            value.Value = gamepass.Value
-            value.Parent = player.ownedGamepasses
-        end
-    end
-})
-
-local Section = Tabs.Main:AddSection("Will make more stuff when I invent it")
-
-Tabs.Performance:AddButton({
-    Title = "Destroy Shadows",
-    Callback = function()
-        game:GetService("Lighting").GlobalShadows = false
-    end
-})
-
-Tabs.Performance:AddButton({
-    Title = "Enable Shadows",
-    Callback = function()
-        game:GetService("Lighting").GlobalShadows = true
-    end
-})
-
-Tabs.Main:AddButton({
-    Title = "Disable Graphics",
-    Callback = function()
-        if game:GetService("ReplicatedStorage"):FindFirstChild("GraphicsParticles") then
-            game:GetService("ReplicatedStorage").GraphicsParticles = false
-        end
-    end
-})
-
-Tabs.Main:AddButton({
-    Title = "Enable Graphics",
-    Callback = function()
-        if game:GetService("ReplicatedStorage"):FindFirstChild("GraphicsParticles") then
-            game:GetService("ReplicatedStorage").GraphicsParticles = true
-        end
-    end
-})
