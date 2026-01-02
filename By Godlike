@@ -1099,20 +1099,6 @@ local k = function(l)
     end
 end
 
--- New helper function to equip multiple pets at once
-local equipMultiple = function(petNames)
-    d()                -- Unequip everything first
-    task.wait(.1)
-    for _, petName in ipairs(petNames) do
-        for __, pet in pairs(c.petsFolder.Unique:GetChildren()) do
-            if pet.Name == petName then
-                a.rEvents.equipPetEvent:FireServer("equipPet", pet)
-            end
-        end
-    end
-    task.wait(.1)      -- Small delay to ensure all equip requests are processed
-end
-
 local o = function(p)
     local q = workspace.machinesFolder:FindFirstChild(p)
     if not q then
@@ -1145,8 +1131,15 @@ local function startRebirthAutomation()
             w = math.floor(w * (1 - (x * .1)))
         end
 
-        -- Equip both Swift Samurai and Darkstar Hunter together
-        equipMultiple({"Swift Samurai", "Darkstar Hunter"})
+        d()                  -- Unequip all pets first
+        task.wait(.1)
+
+        -- Equip both Swift Samurai and Darkstar Hunter at the same time
+        for m, n in pairs(c.petsFolder.Unique:GetChildren()) do
+            if n.Name == "Swift Samurai" or n.Name == "Darkstar Hunter" then
+                a.rEvents.equipPetEvent:FireServer("equipPet", n)
+            end
+        end
 
         while isRunning and c.leaderstats.Strength.Value < w do
             for y = 1, 12 do
