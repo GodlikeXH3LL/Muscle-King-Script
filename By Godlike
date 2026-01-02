@@ -1069,8 +1069,8 @@ local Toggle = Tabs.Rebirth:CreateToggle("FrameToggle", {
     end
 })
 
-
 local isRunning = false
+
 
 local a = game:GetService("ReplicatedStorage")
 local b = game:GetService("Players")
@@ -1090,12 +1090,12 @@ local d = function(e)
     task.wait(.1)
 end
 
-local equipMultiple = function(petsTable)
-    for _, petName in pairs(petsTable) do
-        for m, n in pairs(c.petsFolder.Unique:GetChildren()) do
-            if n.Name == petName then
-                a.rEvents.equipPetEvent:FireServer("equipPet", n)
-            end
+local k = function(l)
+    d()
+    task.wait(.1)
+    for m, n in pairs(c.petsFolder.Unique:GetChildren()) do
+        if n.Name == l then
+            a.rEvents.equipPetEvent:FireServer("equipPet", n)
         end
     end
 end
@@ -1132,11 +1132,9 @@ local function startRebirthAutomation()
             w = math.floor(w * (1 - (x * .1)))
         end
 
-        d()  -- Unequip all pets
+        d()
         task.wait(.1)
-        
-        -- Equip both Swift Samurai and Darkstar Hunter simultaneously for the grinding phase
-        equipMultiple({"Swift Samurai", "Darkstar Hunter"})
+        k("Swift Samurai", "Darkstar Hunter")
 
         while isRunning and c.leaderstats.Strength.Value < w do
             for y = 1, 12 do
@@ -1145,9 +1143,9 @@ local function startRebirthAutomation()
             task.wait()
         end
 
-        d()  -- Unequip all again
+        d()
         task.wait(.1)
-        k("Tribal Overlord")  -- Assuming k is still defined elsewhere or replace with equipMultiple({"Tribal Overlord"}) if needed
+        k("Tribal Overlord")
 
         local z = o("Jungle Bar Lift")
         if z and z:FindFirstChild("interactSeat") then
