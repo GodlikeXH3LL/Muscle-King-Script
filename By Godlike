@@ -147,3 +147,4 @@ local function startRebirthAutomation()
         task.wait()
     end
 end
+	end)
